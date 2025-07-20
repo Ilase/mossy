@@ -1,3 +1,4 @@
+import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,49 +10,64 @@ class CollectionsPage extends ConsumerStatefulWidget {
 }
 
 class _CollectionsPageState extends ConsumerState<CollectionsPage> {
-  double leftWidth = 300;
+  late TreeNode<String> root;
+
+  @override
+  void initState() {
+    super.initState();
+    root = generateMockFileSystem();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final double rightMinWidth = 100;
-    final double leftMinWidth = 100;
-
-    return Scaffold(
-      body: Row(
-        children: [
-          SizedBox(
-            width: leftWidth,
-            child: Card(
-                child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: const Placeholder(color: Colors.blue),
-            )),
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.resizeLeftRight,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragUpdate: (details) {
-                setState(() {
-                  leftWidth += details.delta.dx;
-                  if (leftWidth < leftMinWidth) leftWidth = leftMinWidth;
-                  if (leftWidth > screenWidth - rightMinWidth) {
-                    leftWidth = screenWidth - rightMinWidth;
-                  }
-                });
-              },
-              child: VerticalDivider(),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(child: const Placeholder(color: Colors.green)),
-            ),
-          ),
-        ],
+    return Center(
+      child: TreeView.simple(
+        expansionBehavior: ExpansionBehavior.scrollToLastChild,
+        tree: root,
+        builder: (context, node) {
+          final isFolder = node.children.isNotEmpty;
+          return ListTile(
+            leading: Icon(isFolder ? Icons.folder : Icons.insert_drive_file),
+            title: Text(node.data.toString()),
+          );
+        },
       ),
     );
   }
+}
+
+TreeNode<String> generateMockFileSystem() {
+  return TreeNode.root(data: 'Collection')
+    ..addAll([
+      TreeNode(key: 'auth', data: 'Auth')
+        ..addAll([
+          TreeNode(key: 'resume', data: 'Resume.docx'),
+          TreeNode(key: 'project', data: 'Project')
+            ..addAll([
+              TreeNode(key: 'design_pdf', data: 'design.pdf'),
+              TreeNode(key: 'presentation', data: 'presentation.pptx'),
+            ]),
+        ]),
+      TreeNode(key: 'data', data: 'Data')
+        ..addAll([
+          TreeNode(key: 'rock', data: 'Rock')
+            ..addAll([
+              TreeNode(key: 'song1', data: 'song1.mp3'),
+              TreeNode(key: 'song2', data: 'song2.mp3'),
+            ]),
+          TreeNode(key: 'pop', data: 'Pop')
+            ..add(
+              TreeNode(key: 'hit', data: 'hit.mp3'),
+            ),
+        ]),
+      TreeNode(key: 'pictures', data: 'Pictures')
+        ..addAll([
+          TreeNode(key: 'vacation', data: 'Vacation')
+            ..addAll([
+              TreeNode(key: 'beach', data: 'beach.png'),
+              TreeNode(key: 'mountains', data: 'mountains.jpg'),
+            ]),
+          TreeNode(key: 'family', data: 'Family.jpg'),
+        ]),
+    ]);
 }
