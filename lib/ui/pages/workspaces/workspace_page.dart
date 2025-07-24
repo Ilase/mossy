@@ -46,15 +46,6 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage>
           icon: Icon(Icons.add),
         ),
       ],
-      appBar: AppBar(
-        title: AppBarMiddleActions(),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications),
-          )
-        ],
-      ),
       body: Row(
         children: [
           NavigationRail(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mossys/ui/pages/workspace_page.dart';
+import 'package:mossys/ui/pages/splash/splash_screen.dart';
 
 void main() {
   runApp(ProviderScope(child: const Mossys()));
@@ -9,9 +9,8 @@ void main() {
 class Mossys extends StatelessWidget {
   const Mossys({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: WorkspacePage());
+    return MaterialApp(home: SplashScreen());
   }
 }
